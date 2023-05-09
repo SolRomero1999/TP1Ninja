@@ -1,4 +1,5 @@
 import Game from "./assets/scenes/Game.js";
+
 const config = {
   type: Phaser.AUTO,
   width: 800,
