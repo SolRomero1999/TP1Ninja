@@ -58,13 +58,13 @@ export default class Game extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys(); //funcionalidad de las flechas
 
-        this.rebote = this.physics.add.collider(
+        this.rebote = this.physics.add.collider( 
             this.shapeGroup,
             this.plataformas,
             this.scoreDisminuido,
             null,
             this
-          );
+          ); //agrega colisión entre las formas y las plataformas 
 
         this.time.addEvent({ //crea un nuevo evento cronometrado
             delay: SHAPE_DELAY, //frecuencia con la que se ejecutará el evento
@@ -107,5 +107,11 @@ export default class Game extends Phaser.Scene {
             console.log(randomX, randomShape);
             this.shapeGroup.create(randomX, 0, randomShape, 0, true).setBounce(1); //crea el asset en x con forma random
           }
+
+          collectShape(player, shape) { //Esta es una función que se ejecuta cuando el jugador choca con una figura y la remueve de pantalla
+            console.log("figura recolectada"); //Imprime un mensaje en la consola para indicar que la figura fue recogida
+            shape.disableBody(true, true); //Desactiva la figura y la elimina del cuerpo físico
+            const shapeName = shape.texture.key; //Obtiene el nombre de la figura recogida
+        }
 
 }
