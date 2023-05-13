@@ -94,18 +94,25 @@ export default class Game extends Phaser.Scene {
     }); 
 
     //Texto contador 
-    this.textoTemporizador = this.add.text(10, 10, "Tiempo: " + this.timer, { //posición y texto 
+    this.textoTemporizador = this.add.text(10, 10, "Tiempo:  " + this.timer, { //posición y texto 
       fontSize: "25px", //tamaño 
       fill: "#FFFFFF", //color letra 
       backgroundColor: "#000000" //color fondo 
     });
 
-    //Texto puntaje
+    //Texto formas 
     this.scoreText = this.add.text(260, 10, "Triángulo: 0/ Cuadrado: 0/ Rombo: 0", {  
       fontSize: "25px",
       fill: "#FFFFFF",
       backgroundColor: "#000000"
-    });    
+    });   
+    
+    //Texto puntaje 
+    this.textoPuntaje = this.add.text(10, 40, "Puntaje: 0", { 
+      fontSize: "25px", 
+      fill: "#FFFFFF", 
+      backgroundColor: "#000000"  
+    });
 
   }
 
@@ -140,8 +147,7 @@ export default class Game extends Phaser.Scene {
         }
         if (this.timer === 0 && !this.isWinner) {
           this.isGameOver = true;
-        }
-        
+        }        
 
       }
 
@@ -167,11 +173,15 @@ export default class Game extends Phaser.Scene {
           this.puntosRombo = this.objetos[ROMBO].count * this.objetos[ROMBO].score;        
           this.puntos = this.puntosTriangulo + this.puntosCuadrado + this.puntosRombo;
 
-          //ACTUALIZA EL TEXTO DEL PUNTAJE
+          //ACTUALIZA EL TEXTO DE LAS FORMAS 
           this.scoreText.setText(
             "Triángulo: " + this.objetos[TRIANGULO].count +
             " Cuadrado: " + this.objetos[CUADRADO].count +
             " Rombo: " + this.objetos[ROMBO].count
+          );
+
+          this.textoPuntaje.setText(
+            "Puntaje: " + this.puntos
           );
       
           //CONDICIÓN PARA GANAR 
