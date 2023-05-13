@@ -86,10 +86,10 @@ export default class Game extends Phaser.Scene {
     }); 
 
     //Texto contador 
-    this.textoTemporizador = this.add.text(10, 10, "Tiempo: " + this.timer, {
-      fontSize: "30px",
-      fill: "#FFFFFF",
-      backgroundColor: "#000000"
+    this.textoTemporizador = this.add.text(10, 10, "Tiempo: " + this.timer, { //posición y texto 
+      fontSize: "30px", //tamaño 
+      fill: "#FFFFFF", //color letra 
+      backgroundColor: "#000000" //color fondo 
     });    
 
   }
@@ -134,12 +134,11 @@ export default class Game extends Phaser.Scene {
       }
 
       contador() {
-        console.log(this.timer);
-        this.timer--;
-        console.log(this.timer);
-        this.textoTemporizador.setText("Tiempo: " + this.timer);
-      } 
-
+        console.log(this.timer); // Imprime en la consola el valor actual del timer
+        this.timer--; // Disminuye el valor del timer en 1
+        console.log(this.timer); // Imprime en la consola el nuevo valor del timer
+        this.textoTemporizador.setText("Tiempo: " + this.timer); // Actualiza el texto del temporizador con el nuevo valor del timer
+      }      
 
 
 }
