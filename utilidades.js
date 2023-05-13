@@ -10,6 +10,8 @@ const Player_Movement = {
   };
 
 const SHAPE_DELAY = 3000;
+const TIMER = 60; //A
+const TIMER_DELAY = 1000; //A
 
 export {
     TRIANGULO,
@@ -18,4 +20,6 @@ export {
     SHAPES,
     Player_Movement,
     SHAPE_DELAY,
+    TIMER, //A
+    TIMER_DELAY, //A
   };
