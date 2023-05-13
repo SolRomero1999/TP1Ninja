@@ -15,6 +15,14 @@ export default class Game extends Phaser.Scene {
   }
 
   init() {
+    this.objetos = {
+      ["Triangulo"]: { count: 0, score: 20 },
+      ["Cuadrado"]: { count: 0, score: 15 },
+      ["Rombo"]: { count: 0, score: 10 },
+    };
+      this.isWinner = false;
+      this.isGameOver = false;
+      this.puntos = 0;
       this.Platform_Movement = 250; 
       this.plataformaMovible;
       this.timer = TIMER; 
@@ -87,16 +95,23 @@ export default class Game extends Phaser.Scene {
 
     //Texto contador 
     this.textoTemporizador = this.add.text(10, 10, "Tiempo: " + this.timer, { //posición y texto 
-      fontSize: "30px", //tamaño 
+      fontSize: "25px", //tamaño 
       fill: "#FFFFFF", //color letra 
       backgroundColor: "#000000" //color fondo 
+    });
+
+    //Texto puntaje
+    this.scoreText = this.add.text(260, 10, "Triángulo: 0/ Cuadrado: 0/ Rombo: 0", {  
+      fontSize: "25px",
+      fill: "#FFFFFF",
+      backgroundColor: "#000000"
     });    
 
   }
 
   update() {
 
-      if (this.plataformaMovible.x >= 700) { //si la plataforma ha llegado al límite derecho del juego
+        if (this.plataformaMovible.x >= 700) { //si la plataforma ha llegado al límite derecho del juego
           this.plataformaMovible.setVelocityX(-this.Platform_Movement); //La velocidad negativa hace que la plataforma se mueva en la dirección opuesta al eje x
         }
         if (this.plataformaMovible.x <= 100) { // la plataforma ha llegado al límite izquierdo del juego
@@ -117,8 +132,20 @@ export default class Game extends Phaser.Scene {
           this.player.setVelocityY(-Player_Movement.y); //la velocidad vertical del jugador se establece en una cantidad negativa, lo que hace que el jugador salte hacia arriba
         }
 
+        if (this.isWinner) {
+          this.scene.start("winner");
+        }
+        if (this.isGameOver) {
+          this.scene.start("gameOver");
+        }
+        if (this.timer === 0 && !this.isWinner) {
+          this.isGameOver = true;
+        }
+        
+
       }
 
+      //CREAR FORMA
       addShape() {
           console.log("Se crea una forma"); 
           const randomShape = Phaser.Math.RND.pick(SHAPES);//Elige una forma dentro del array shapes
@@ -127,10 +154,36 @@ export default class Game extends Phaser.Scene {
           this.shapeGroup.create(randomX, 0, randomShape, 0, true).setBounce(1); //crea el asset en x con forma random
         }
 
+      //RECOLECTAR FORMA  
       collectShape(player, shape) { //Esta es una función que se ejecuta cuando el jugador choca con una figura y la remueve de pantalla
           console.log("figura recolectada"); //Imprime un mensaje en la consola para indicar que la figura fue recogida
           shape.disableBody(true, true); //Desactiva la figura y la elimina del cuerpo físico
           const shapeName = shape.texture.key; //Obtiene el nombre de la figura recogida
+
+
+          this.objetos[shapeName].count++; //Esta línea incrementa el contador de la figura que se ha recogido
+          this.puntosTriangulo = this.objetos[TRIANGULO].count * this.objetos[TRIANGULO].score;
+          this.puntosCuadrado = this.objetos[CUADRADO].count * this.objetos[CUADRADO].score;
+          this.puntosRombo = this.objetos[ROMBO].count * this.objetos[ROMBO].score;        
+          this.puntos = this.puntosTriangulo + this.puntosCuadrado + this.puntosRombo;
+
+          //ACTUALIZA EL TEXTO DEL PUNTAJE
+          this.scoreText.setText(
+            "Triángulo: " + this.objetos[TRIANGULO].count +
+            " Cuadrado: " + this.objetos[CUADRADO].count +
+            " Rombo: " + this.objetos[ROMBO].count
+          );
+      
+          //CONDICIÓN PARA GANAR 
+          if (
+            this.objetos[TRIANGULO].count >= 2 &&
+            this.objetos[CUADRADO].count >= 2 &&
+            this.objetos[ROMBO].count >= 2 &&
+            this.puntos >= 100
+          ) {
+            this.isWinner = true;
+          }      
+
       }
 
       contador() {

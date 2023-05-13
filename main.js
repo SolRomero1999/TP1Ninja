@@ -1,4 +1,6 @@
 import Game from "./assets/scenes/Game.js";
+import GameOver from "./assets/scenes/GameOver.js";
+import Winner from "./assets/scenes/Winner.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -24,7 +26,7 @@ const config = {
     },
   },
 
-  scene: [Game],
+  scene: [Game, GameOver, Winner],
 };
 
 window.game = new Phaser.Game(config);
