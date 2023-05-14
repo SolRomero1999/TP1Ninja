@@ -7,6 +7,8 @@ import {
   SHAPE_DELAY,
   TIMER, 
   TIMER_DELAY, 
+  POINTS_PERCENTAGE,
+  POINTS_PERCENTAGE_VALUE_START,
 } from "../../utilidades.js"; //Se exportan las constantes establecidas en utilidades 
 
 export default class Game extends Phaser.Scene {
@@ -72,7 +74,7 @@ export default class Game extends Phaser.Scene {
       this.rebote = this.physics.add.collider( 
           this.shapeGroup,
           this.plataformas,
-          this.scoreDisminuido,
+          this.reduce,
           null,
           this
         ); //agrega colisión entre las formas y las plataformas 
@@ -113,7 +115,7 @@ export default class Game extends Phaser.Scene {
       fill: "#FFFFFF", 
       backgroundColor: "#000000"  
     });
-
+    
   }
 
   update() {
@@ -151,13 +153,14 @@ export default class Game extends Phaser.Scene {
 
       }
 
-      //CREAR FORMA
-      addShape() {
-          console.log("Se crea una forma"); 
-          const randomShape = Phaser.Math.RND.pick(SHAPES);//Elige una forma dentro del array shapes
-          const randomX = Phaser.Math.RND.between(0, 800); //elige un lugar random entre 0 y 800 pixels
-          console.log(randomX, randomShape);
-          this.shapeGroup.create(randomX, 0, randomShape, 0, true).setBounce(1); //crea el asset en x con forma random
+        addShape() {
+          const randomShape = Phaser.Math.RND.pick([TRIANGULO, CUADRADO, ROMBO]);
+          const randomX = Phaser.Math.RND.between(0, 800);
+          this.shapeGroup.create(randomX, 0, randomShape)
+            .setCircle(32, 0, 0)
+            .setBounce(0.8)
+            .setData(POINTS_PERCENTAGE, POINTS_PERCENTAGE_VALUE_START);
+          console.log("shape is added", randomX, randomShape);
         }
 
       //RECOLECTAR FORMA  
@@ -165,7 +168,6 @@ export default class Game extends Phaser.Scene {
           console.log("figura recolectada"); //Imprime un mensaje en la consola para indicar que la figura fue recogida
           shape.disableBody(true, true); //Desactiva la figura y la elimina del cuerpo físico
           const shapeName = shape.texture.key; //Obtiene el nombre de la figura recogida
-
 
           this.objetos[shapeName].count++; //Esta línea incrementa el contador de la figura que se ha recogido
           this.puntosTriangulo = this.objetos[TRIANGULO].count * this.objetos[TRIANGULO].score;
@@ -201,7 +203,27 @@ export default class Game extends Phaser.Scene {
         this.timer--; // Disminuye el valor del timer en 1
         console.log(this.timer); // Imprime en la consola el nuevo valor del timer
         this.textoTemporizador.setText("Tiempo: " + this.timer); // Actualiza el texto del temporizador con el nuevo valor del timer
-      }      
+      }    
+      
+      reduce(shape, platform){
+        const newPercentage = shape.getData(POINTS_PERCENTAGE) - 0.25;
+        console.log(shape.texture.key, newPercentage);
+        shape.setData(POINTS_PERCENTAGE, newPercentage);
+        if (newPercentage <= 0) {
+          shape.disableBody(true, true);
+          return;
+        }
 
-
+    // TEXTO DISMINUCIÓN PUNTOS FORMA
+    const text = this.add.text(shape.body.position.x+10, shape.body.position.y, "- 25%", {
+      fontSize: "22px",
+      fontStyle: "bold",
+      fill: "red",
+    });
+    setTimeout(() => {
+      text.destroy();
+    }, 200);
+  }
+    
+      
 }

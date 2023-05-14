@@ -10,8 +10,12 @@ const Player_Movement = {
   };
 
 const SHAPE_DELAY = 3000;
-const TIMER = 60; //A
+const TIMER = 60; 
 const TIMER_DELAY = 1000; 
+
+
+const POINTS_PERCENTAGE = "value";
+const POINTS_PERCENTAGE_VALUE_START = 1;
 
 export {
     TRIANGULO,
@@ -22,4 +26,6 @@ export {
     SHAPE_DELAY,
     TIMER, 
     TIMER_DELAY, 
+    POINTS_PERCENTAGE,
+    POINTS_PERCENTAGE_VALUE_START,
   };
