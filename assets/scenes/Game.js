@@ -2,6 +2,7 @@ import {
   TRIANGULO,
   CUADRADO,
   ROMBO,
+  SHURIKEN,
   SHAPES,
   Player_Movement,
   SHAPE_DELAY,
@@ -21,6 +22,7 @@ export default class Game extends Phaser.Scene {
       ["Triangulo"]: { count: 0, score: 20 },
       ["Cuadrado"]: { count: 0, score: 15 },
       ["Rombo"]: { count: 0, score: 10 },
+      ["Shuriken"]: { count: 0, score: 20 },
     };
       this.isWinner = false;
       this.isGameOver = false;
@@ -37,30 +39,41 @@ export default class Game extends Phaser.Scene {
       this.load.image(ROMBO, "assets/images/Rombo.png");
       this.load.image(TRIANGULO, "assets/images/Triangulo.png");
       this.load.image(CUADRADO, "assets/images/Cuadrado.png");
+      this.load.image(SHURIKEN, "assets/images/Shu.png");
     } //donde esta ubicada la imagen 
 
     create() {
       this.add.image(400, 300, "Cielo").setScale(0.555); //Se agrega la imagen Cielo en la posición (400, 300) escalada
-      this.player = this.physics.add.sprite(200, 300, "Ninja"); //Se agrega un sprite en la posición (200, 300)
+      this.player = this.physics.add.sprite(400, 500, "Ninja"); //Se agrega un sprite en la posición (200, 300)
       this.player.setCollideWorldBounds(true); //hace que el sprite no pueda salir del mundo del juego
       this.plataformas = this.physics.add.staticGroup(); //Se crea el grupo de objetos estáticos llamado "plataformas"
       this.plataformas.create(400, 568, "Plataforma").setScale(2).refreshBody(); //se agrega una plataforma estática en la posición (400, 568) y se escala al doble de su tamaño original
       this.plataformaMovible = this.physics.add.staticGroup(); //Se crea otro grupo de objetos estáticos llamado "plataformaMovible"
-
       this.plataformaMovible = this.physics.add 
         .image(400, 400, "Plataforma")
         .setScale(0.55); //se agrega una plataforma móvil en la posición (400, 400) y se escala la imagen
-
       this.plataformaMovible.setImmovable(true); //hace que la plataforma no pueda moverse por la física del juego
       this.plataformaMovible.body.allowGravity = false; //desactiva la gravedad para la plataforma
       this.plataformaMovible.setVelocityX(250); //establece la velocidad horizontal de la plataforma en 250
       this.plataformaMovible.setCollideWorldBounds(false); //hace que la plataforma pueda salir del mundo del juego
+
       this.shapeGroup = this.physics.add.group(); //Se crea un grupo de objetos llamado "shapeGroup"
 
       this.physics.add.collider(this.player, this.plataformas);
       this.physics.add.collider(this.plataformaMovible, this.shapeGroup);
       this.physics.add.collider(this.player, this.plataformaMovible); //Se agregan colisiones entre los elementos del juego
 
+      //SEGUNDA PLATAFORMA 
+      this.otraPlataformaMovible = this.physics.add.image(400, 200, "Plataforma").setScale(0.55);
+      this.otraPlataformaMovible.setImmovable(true);
+      this.otraPlataformaMovible.body.allowGravity = false;
+      this.otraPlataformaMovible.setVelocityX(-250); //se establece la velocidad horizontal negativa
+      this.otraPlataformaMovible.setCollideWorldBounds(false);
+      this.physics.add.collider(this.otraPlataformaMovible, this.shapeGroup);
+      this.physics.add.collider(this.player, this.otraPlataformaMovible);
+
+
+    
       this.physics.add.overlap( //agrega una comprobación de superposición entre dos objetos
         this.player, //primer objeto a comprobar
         this.shapeGroup, //segundo objeto a comprobar 
@@ -126,7 +139,14 @@ export default class Game extends Phaser.Scene {
         if (this.plataformaMovible.x <= 100) { // la plataforma ha llegado al límite izquierdo del juego
           this.plataformaMovible.setVelocityX(this.Platform_Movement); //La velocidad positiva hace que la plataforma se mueva en la dirección del eje x
         }
-      
+
+        if (this.otraPlataformaMovible.x >= 700) { //si la plataforma ha llegado al límite derecho del juego
+          this.otraPlataformaMovible.setVelocityX(-this.Platform_Movement); //La velocidad negativa hace que la plataforma se mueva en la dirección opuesta al eje x
+        }
+        if (this.otraPlataformaMovible.x <= 100) { // la plataforma ha llegado al límite izquierdo del juego
+          this.otraPlataformaMovible.setVelocityX(this.Platform_Movement); //La velocidad positiva hace que la plataforma se mueva en la dirección del eje x
+        }
+        
         if (this.cursors.left.isDown) { //si la tecla de flecha izquierda se encuentra presionada
           this.player.setVelocityX(-Player_Movement.x); //se establece la velocidad horizontal del jugador en una cantidad negativa
 
@@ -154,7 +174,7 @@ export default class Game extends Phaser.Scene {
       }
 
         addShape() {
-          const randomShape = Phaser.Math.RND.pick([TRIANGULO, CUADRADO, ROMBO]);
+          const randomShape = Phaser.Math.RND.pick([TRIANGULO, CUADRADO, ROMBO, SHURIKEN]);
           const randomX = Phaser.Math.RND.between(0, 800);
           this.shapeGroup.create(randomX, 0, randomShape)
             .setCircle(32, 0, 0)
@@ -172,8 +192,9 @@ export default class Game extends Phaser.Scene {
           this.objetos[shapeName].count++; //Esta línea incrementa el contador de la figura que se ha recogido
           this.puntosTriangulo = this.objetos[TRIANGULO].count * this.objetos[TRIANGULO].score;
           this.puntosCuadrado = this.objetos[CUADRADO].count * this.objetos[CUADRADO].score;
-          this.puntosRombo = this.objetos[ROMBO].count * this.objetos[ROMBO].score;        
-          this.puntos = this.puntosTriangulo + this.puntosCuadrado + this.puntosRombo;
+          this.puntosRombo = this.objetos[ROMBO].count * this.objetos[ROMBO].score;    
+          this.puntosShuriken = this.objetos[SHURIKEN].count * this.objetos[SHURIKEN].score;      
+          this.puntos = this.puntosTriangulo + this.puntosCuadrado + this.puntosRombo - this.puntosShuriken;
 
           //ACTUALIZA EL TEXTO DE LAS FORMAS 
           this.scoreText.setText(

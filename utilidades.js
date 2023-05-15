@@ -1,8 +1,9 @@
 const TRIANGULO = "Triangulo";
 const CUADRADO = "Cuadrado";
 const ROMBO = "Rombo";
+const SHURIKEN = "Shuriken";
 
-const SHAPES = [TRIANGULO, CUADRADO, ROMBO];  
+const SHAPES = [TRIANGULO, CUADRADO, ROMBO, SHURIKEN];  
 
 const Player_Movement = {
     x: 160,
@@ -21,6 +22,7 @@ export {
     TRIANGULO,
     CUADRADO,
     ROMBO,
+    SHURIKEN,
     SHAPES,
     Player_Movement,
     SHAPE_DELAY,
