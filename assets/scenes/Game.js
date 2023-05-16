@@ -60,7 +60,11 @@ export default class Game extends Phaser.Scene {
       this.shapeGroup = this.physics.add.group(); //Se crea un grupo de objetos llamado "shapeGroup"
 
       this.physics.add.collider(this.player, this.plataformas);
-      this.physics.add.collider(this.plataformaMovible, this.shapeGroup);
+      //this.physics.add.collider(this.plataformaMovible, this.shapeGroup);
+      this.physics.add.collider(this.plataformaMovible, this.shapeGroup, (plataforma, shape) => {
+        plataforma.setVelocityX(250);
+      });
+
       this.physics.add.collider(this.player, this.plataformaMovible); //Se agregan colisiones entre los elementos del juego
 
       //SEGUNDA PLATAFORMA 
@@ -69,7 +73,13 @@ export default class Game extends Phaser.Scene {
       this.otraPlataformaMovible.body.allowGravity = false;
       this.otraPlataformaMovible.setVelocityX(-250); //se establece la velocidad horizontal negativa
       this.otraPlataformaMovible.setCollideWorldBounds(false);
-      this.physics.add.collider(this.otraPlataformaMovible, this.shapeGroup);
+
+
+      //this.physics.add.collider(this.otraPlataformaMovible, this.shapeGroup);
+      this.physics.add.collider(this.otraPlataformaMovible, this.shapeGroup, (plataforma, shape) => {
+        plataforma.setVelocityX(-250);
+      });
+
       this.physics.add.collider(this.player, this.otraPlataformaMovible);
 
 
